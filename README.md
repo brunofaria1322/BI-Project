@@ -25,3 +25,12 @@ sudo apt-get update
 # If you want a specific version, use 'postgresql-12' or similar instead of 'postgresql':
 sudo apt-get -y install postgresql
 ```
+
+# More important features
+```py
+import eli5
+from eli5.sklearn import PermutationImportance
+
+perm = PermutationImportance(rf(n_estimators=100, random_state=0).fit(X,y),random_state=1).fit(X,y)
+eli5.show_weights(perm, feature_names = X.columns.tolist())
+```
