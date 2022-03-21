@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:TalendMetadata="http://www.talend.org/metadata/connection/2010" xmlns:orgomg.cwm.resource.record="http:///orgomg/cwm/resource/record.ecore">
+  <TalendMetadata:DelimitedFileConnection xmi:id="_UTXegKfKEeynS9sDoLmDiw" name="Satisfaction" dataPackage="_UTZ6wKfKEeynS9sDoLmDiw" Server="Localhost 127.0.0.1" FilePath="/Users/dylanperdigao/Library/CloudStorage/OneDrive-dei.uc.pt/UC/UC-Cadeiras_do_Curso/Mestrado/Semestre_2/Business_Intelligence/BI-Project/Dataset/satisfaction.csv" Encoding="UTF-8" FieldSeparatorValue="&quot;;&quot;" RowSeparatorValue="&quot;\n&quot;" UseHeader="true" HeaderValue="1" FirstLineCaption="true"/>
+  <orgomg.cwm.resource.record:RecordFile xmi:id="_UTZ6wKfKEeynS9sDoLmDiw" name="default" dataManager="_UTXegKfKEeynS9sDoLmDiw">
+    <ownedElement xsi:type="TalendMetadata:MetadataTable" xmi:id="_UTah0KfKEeynS9sDoLmDiw" id="_sFoEsKfIEeynS9sDoLmDiw" label="metadata">
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah0afKEeynS9sDoLmDiw" label="id" length="6" talendType="id_Integer" key="true" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah0qfKEeynS9sDoLmDiw" label="satisfaction_v2" length="9" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah06fKEeynS9sDoLmDiw" label="Gender" length="6" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah1KfKEeynS9sDoLmDiw" label="Customer_Type" length="14" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah1afKEeynS9sDoLmDiw" label="Age" length="2" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah1qfKEeynS9sDoLmDiw" label="Type_of_Travel" length="15" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah16fKEeynS9sDoLmDiw" label="Flight_Class" length="8" talendType="id_String" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah2KfKEeynS9sDoLmDiw" label="Flight_Distance" length="4" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah2afKEeynS9sDoLmDiw" label="Seat_comfort" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah2qfKEeynS9sDoLmDiw" label="Departure_Arrival_time_convenient" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah26fKEeynS9sDoLmDiw" label="Food_and_drink" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah3KfKEeynS9sDoLmDiw" label="Gate_location" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah3afKEeynS9sDoLmDiw" label="Inflight_wifi_service" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah3qfKEeynS9sDoLmDiw" label="Inflight_entertainment" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah36fKEeynS9sDoLmDiw" label="Online_support" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah4KfKEeynS9sDoLmDiw" label="Ease_of_Online_booking" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah4afKEeynS9sDoLmDiw" label="On_board_service" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah4qfKEeynS9sDoLmDiw" label="Leg_room_service" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah46fKEeynS9sDoLmDiw" label="Baggage_handling" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah5KfKEeynS9sDoLmDiw" label="Checkin_service" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah5afKEeynS9sDoLmDiw" label="Cleanliness" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah5qfKEeynS9sDoLmDiw" label="Online_boarding" length="1" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah56fKEeynS9sDoLmDiw" label="Departure_Delay_in_Minutes" length="3" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_UTah6KfKEeynS9sDoLmDiw" label="Arrival_Delay_in_Minutes" length="3" talendType="id_Integer" pattern="&quot;dd-MM-yyyy&quot;"/>
+    </ownedElement>
+  </orgomg.cwm.resource.record:RecordFile>
+</xmi:XMI>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:TalendMetadata="http://www.talend.org/metadata/connection/2010" xmlns:orgomg.cwm.resource.record="http:///orgomg/cwm/resource/record.ecore">
+  <TalendMetadata:FileExcelConnection xmi:id="_wvJxYKfEEey2m_IaSNT66A" name="Satisfaction" dataPackage="_wvQfEKfEEey2m_IaSNT66A" Server="Localhost 127.0.0.1" FilePath="/Users/dylanperdigao/Library/CloudStorage/OneDrive-dei.uc.pt/UC/UC-Cadeiras_do_Curso/Mestrado/Semestre_2/Business_Intelligence/BI-Project/Dataset/satisfaction.xlsx" Encoding="UTF-8" SheetName="satisfaction_v2" firstColumn="1" thousandSeparator="','" decimalSeparator="'.'" selectAllSheets="true" sheetList="satisfaction_v2:w&#xA;">
+    <sheetColumns>A</sheetColumns>
+    <sheetColumns>B</sheetColumns>
+    <sheetColumns>C</sheetColumns>
+    <sheetColumns>D</sheetColumns>
+    <sheetColumns>E</sheetColumns>
+    <sheetColumns>F</sheetColumns>
+    <sheetColumns>G</sheetColumns>
+    <sheetColumns>H</sheetColumns>
+    <sheetColumns>I</sheetColumns>
+    <sheetColumns>J</sheetColumns>
+    <sheetColumns>K</sheetColumns>
+    <sheetColumns>L</sheetColumns>
+    <sheetColumns>M</sheetColumns>
+    <sheetColumns>N</sheetColumns>
+    <sheetColumns>O</sheetColumns>
+    <sheetColumns>P</sheetColumns>
+    <sheetColumns>Q</sheetColumns>
+    <sheetColumns>R</sheetColumns>
+    <sheetColumns>S</sheetColumns>
+    <sheetColumns>T</sheetColumns>
+    <sheetColumns>U</sheetColumns>
+    <sheetColumns>V</sheetColumns>
+    <sheetColumns>W</sheetColumns>
+    <sheetColumns>X</sheetColumns>
+  </TalendMetadata:FileExcelConnection>
+  <orgomg.cwm.resource.record:RecordFile xmi:id="_wvQfEKfEEey2m_IaSNT66A" name="default" dataManager="_wvJxYKfEEey2m_IaSNT66A">
+    <ownedElement xsi:type="TalendMetadata:MetadataTable" xmi:id="_wvS7UKfEEey2m_IaSNT66A" id="_SuINwKfEEey2m_IaSNT66A" label="metadata">
+      <feature xsi:type="TalendMetadata:MetadataColumn" xmi:id="_wvTiYKfEEey2m_IaSNT66A" name="newColumn" label="newColumn" talendType="id_String"/>
+    </ownedElement>
+  </orgomg.cwm.resource.record:RecordFile>
+</xmi:XMI>
