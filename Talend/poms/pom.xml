@@ -10,7 +10,9 @@
   <url>http://www.talend.org/</url>
   <modules>
     <module>code/routines</module>
-    <module>jobs/process/data_integration_0.1</module>
+    <module>jobs/process/fact_table_creation_0.1</module>
+    <module>jobs/process/dim_table_creation_0.1</module>
+    <module>jobs/process/db_connection_0.1</module>
   </modules>
   <properties>
     <talend.project.name>BI</talend.project.name>
