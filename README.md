@@ -9,7 +9,7 @@ https://www.kaggle.com/teejmahal20/airline-passenger-satisfaction
 Features that affects the satisfaction of customer
 https://www.kaggle.com/fattahuzzaman/features-that-affects-the-satisfaction-of-customer
 
-# Postgres Installation on Ubunto
+## Postgres Installation on Ubuntu
 
 ```sh
 # Create the file repository configuration:
@@ -25,8 +25,22 @@ sudo apt-get update
 # If you want a specific version, use 'postgresql-12' or similar instead of 'postgresql':
 sudo apt-get -y install postgresql
 ```
-
-# More important features
+## Test Database Connection
+1. Use postgres user
+```sh
+sudo -i -u postgres
+```
+2. Use psql CMD
+```sh
+psql -U postgres
+```
+```sql
+-- create database
+CREATE DATABASE talend;
+-- see existing databases
+SELECT datname FROM pg_database;
+```
+## More important features
 ```py
 import eli5
 from eli5.sklearn import PermutationImportance
