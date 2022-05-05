@@ -10,9 +10,19 @@
   <url>http://www.talend.org/</url>
   <modules>
     <module>code/routines</module>
-    <module>jobs/process/fact_table_creation_0.1</module>
-    <module>jobs/process/dim_table_creation_0.1</module>
-    <module>jobs/process/db_connection_0.1</module>
+    <module>jobs/process/update_wh_0.1</module>
+    <module>jobs/process/Tasks/dim_table_creation_0.1</module>
+    <module>jobs/process/Tasks/dim_table_creation_0.2</module>
+    <module>jobs/process/Tasks/fact_table_creation_0.1</module>
+    <module>jobs/process/Tasks/fact_table_creation_0.2</module>
+    <module>jobs/process/Other/test_database_login_0.1</module>
+    <module>jobs/process/setup_wh_0.1</module>
+    <module>jobs/process/Tasks/fact_table_creation_0.3</module>
+    <module>jobs/process/setup_wh_1.0</module>
+    <module>jobs/process/Tasks/dim_table_creation_1.0</module>
+    <module>jobs/process/Tasks/fact_table_creation_0.4</module>
+    <module>jobs/process/Tasks/fact_table_creation_0.5</module>
+    <module>jobs/process/Other/test1_0.1</module>
   </modules>
   <properties>
     <talend.project.name>BI</talend.project.name>
