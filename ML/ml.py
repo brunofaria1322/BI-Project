@@ -180,7 +180,7 @@ def visualize_data(df, img_path):
     ## Density Plots
     df.plot(kind='density', subplots=True, layout=(5,5), sharex=False, sharey=False)
     plt.savefig(img_path+"density.png")
-    plt.show()
+    #plt.show()
 
 
 def feature_selection(df):
@@ -191,12 +191,17 @@ def feature_selection(df):
         df: a dataframe with the data
 
     Returns:
-        us:
+        us: a dataframe with the selected features from Univariate Selection
+        rfe: a dataframe with the selected features from RFE
+        pca: a dataframe with the selected features from PCA
+        fi: a dataframe with the selected features from Feature Importance
     """
+
+    print("========== Feature Selection ==========")
 
     Y=df['overall_satisfaction']
     X=df.drop(['overall_satisfaction'], axis=1)
-
+    col_names = X.columns.tolist()
 
     ## Univariate Statistical Tests (Chi-squared for classification)
     test= SelectKBest(score_func=chi2, k=4)
@@ -207,10 +212,14 @@ def feature_selection(df):
     #print(fit.scores_)
     us = fit.transform(X)
 
-    # summarize selected features
-    print(us[0:5,:])
+    selected_cols = [col_names[i] for i in range(len(col_names)) if fit.scores_[i] > 0.15* max(fit.scores_)]
+
+    print("Univariate Selection best Features:\t", selected_cols)
+    #proof that they are the same
+    print(np.unique(us == X[selected_cols].values))
 
 
+    ## Recursive Feature Elimination (RFE)
     rfe = pca = fi = 0
 
     return [us, rfe, pca, fi]
@@ -227,7 +236,8 @@ def main():
     data = treat_data(data)
     #print(data.shape)
 
-    visualize_data(data,IMG_PATH)
+    #TODO: UNCOMMENT
+    #visualize_data(data,IMG_PATH)
 
 
     [us, rfe, pca, fi] = feature_selection(data)
