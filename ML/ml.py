@@ -9,8 +9,6 @@ from os.path import exists
 import pandas as pd
 import psycopg2
 
-import time
-
 def connect_to_db():
     """ 
     Connect to the PostgreSQL database server 
@@ -36,7 +34,7 @@ def read_data():
         df: a dataframe with the data
     """
 
-    if exists("data.pkl"):
+    if exists("ML/data.pkl"):
         print("Reading data from pickle...")
         df = read_data_from_pickle()
     else:
@@ -45,19 +43,19 @@ def read_data():
 
         #saves to pickle
         print("Saving data to pickle...")
-        df.to_pickle("data.pkl")
+        df.to_pickle("ML/data.pkl")
 
     return df
 
 def read_data_from_pickle():
     """
-    Read the data from the database
+    Read the data from the pickle file
 
     Returns:
         data: a dataframe with the data
     """
     
-    return pd.read_pickle("data.pkl")
+    return pd.read_pickle("ML/data.pkl")
 
 def read_data_from_db():
     """
@@ -84,11 +82,59 @@ def read_data_from_db():
 
     return df
 
+def treat_data(df):
+    """
+    Treats the data
+
+    Parameters:
+        df: a dataframe with the data
+
+    Returns:
+        df: a dataframe with the treated data
+    """
+    
+    #print(df.columns)
+    #print(df.shape)
+
+    ## Remove columns with ids
+    cols = [c for c in df.columns if c.lower()[-2:] != 'id']
+    df=df[cols]
+
+    #print(df.columns)
+    #print(df.shape)
+
+
+    ## Change object columns to int
+    print(df.dtypes)
+
+    # Check conflicting columns and object values
+    for col in df.columns:
+        if df[col].dtypes == 'object':
+            print(col, df[col].unique())
+
+    # Replace values with int
+    df.loc[:,'overall_satisfaction'] = df['overall_satisfaction'].replace({'satisfied':1, 'neutral or dissatisfied':0})
+    
+    df.loc[:,'gender'] = df['gender'].replace({'Male':1, 'Female':0})
+    df.loc[:,'loyalty'] = df['loyalty'].replace({'Loyal Customer':1, 'disloyal Customer':0})
+    df.loc[:,'flight_class'] = df['flight_class'].replace({'Eco':2, 'Business':1, 'Eco Plus':0})
+    df.loc[:,'type_travel'] = df['type_travel'].replace({'Personal Travel':1,'Business travel':0})
+    
+    print(df.dtypes)
+
+    return df
+
+
 
 def main():
 
     data = read_data()
     print(data.shape)
+
+    data = treat_data(data)
+    print(data.shape)
+
+
 
 if __name__ == "__main__":
     main()
