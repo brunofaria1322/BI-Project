@@ -12,7 +12,11 @@ from os.path import exists
 import pandas as pd
 import psycopg2
 import seaborn as sns
-from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.decomposition import PCA
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.feature_selection import SelectKBest, chi2, RFE
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
 
 
 def connect_to_db():
@@ -124,8 +128,8 @@ def treat_data(df):
     
     df.loc[:,'gender'] = df['gender'].replace({'Male':1, 'Female':0})
     df.loc[:,'loyalty'] = df['loyalty'].replace({'Loyal Customer':1, 'disloyal Customer':0})
-    df.loc[:,'flight_class'] = df['flight_class'].replace({'Eco':2, 'Business':1, 'Eco Plus':0})
-    df.loc[:,'type_travel'] = df['type_travel'].replace({'Personal Travel':1,'Business travel':0})
+    df.loc[:,'flight_class'] = df['flight_class'].replace({'Business':2, 'Eco Plus':1, 'Eco':0 })
+    df.loc[:,'type_travel'] = df['type_travel'].replace({'Business Travel':1,'Personal travel':0})
     
     #print(df.dtypes)
 
@@ -153,7 +157,7 @@ def visualize_data(df, img_path):
     for p in ax.patches:
         ax.annotate(f'\n{p.get_height()}', (p.get_x()+0.2, p.get_height()), ha='center', va='top', color='white', size=18)
     
-    plt.savefig(img_path+"overall_satisfaction_counts.png")
+    plt.savefig(img_path+"/data_visualization/overall_satisfaction_counts.png")
     #plt.show()
 
     ## Correlation matrix
@@ -169,21 +173,44 @@ def visualize_data(df, img_path):
     ax.set_yticks(ticks)
     #ax.set_xticklabels(df.columns)
     ax.set_yticklabels(df.columns)
-    plt.savefig(img_path+"correlation_matrix.png")
+    plt.savefig(img_path+"/data_visualization/correlation_matrix.png")
     #plt.show()
 
     ## Histograms
     df.hist()
-    plt.savefig(img_path+"histgrams.png")
+    plt.savefig(img_path+"/data_visualization/histgrams.png")
     #plt.show()
 
     ## Density Plots
     df.plot(kind='density', subplots=True, layout=(5,5), sharex=False, sharey=False)
-    plt.savefig(img_path+"density.png")
+    plt.savefig(img_path+"/data_visualization/density.png")
     #plt.show()
 
 
-def feature_selection(df):
+def plot_3d_scatter(x,y, axis_labels, title, img_path):
+    """
+    Plots and saves a 3d scatter plot
+
+    Parameters:
+        x: the 3 features array to plot
+        y: the labels
+        axis_labels: the axis labels [x_label, y_label, z_label]
+        title: the title
+        img_path: the path to the images folder
+    """
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x[:,0],x[:,1],x[:,2], c=y, s = 10)
+    ax.set_xlabel(axis_labels[0])
+    ax.set_ylabel(axis_labels[1])
+    ax.set_zlabel(axis_labels[2])
+    plt.savefig(img_path+"/feature_selection/"+title+".png")
+    #plt.show()
+
+
+
+def feature_selection(df, img_path):
     """
     Performs feature selection
 
@@ -193,18 +220,18 @@ def feature_selection(df):
     Returns:
         us: a dataframe with the selected features from Univariate Selection
         rfe: a dataframe with the selected features from RFE
-        pca: a dataframe with the selected features from PCA
+        pca: a dataframe with the reduced features from PCA
         fi: a dataframe with the selected features from Feature Importance
     """
 
-    print("========== Feature Selection ==========")
+    print("\n========== Feature Selection ==========")
 
     Y=df['overall_satisfaction']
     X=df.drop(['overall_satisfaction'], axis=1)
     col_names = X.columns.tolist()
 
     ## Univariate Statistical Tests (Chi-squared for classification)
-    test= SelectKBest(score_func=chi2, k=4)
+    test= SelectKBest(score_func=chi2, k=3)
     fit = test.fit(X, Y)
     #print(fit)
 
@@ -212,15 +239,58 @@ def feature_selection(df):
     #print(fit.scores_)
     us = fit.transform(X)
 
-    selected_cols = [col_names[i] for i in range(len(col_names)) if fit.scores_[i] > 0.15* max(fit.scores_)]
+    selected_cols = [col_names[i] for i in fit.scores_.argsort()[-3:]]
+
+    plot_3d_scatter(us,Y, selected_cols, "univariate_selection", img_path)
 
     print("Univariate Selection best Features:\t", selected_cols)
-    #proof that they are the same
-    print(np.unique(us == X[selected_cols].values))
-
+    # proof that they are the same
+    #print(np.unique(us == X[selected_cols].values))
 
     ## Recursive Feature Elimination (RFE)
-    rfe = pca = fi = 0
+    model = LogisticRegression(solver='lbfgs', max_iter=3000)
+    #lbfgs solver - uses the Limited Memory Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm
+
+    rfe = RFE(model, n_features_to_select=3)
+    fit = rfe.fit(X, Y)
+
+    rfe = fit.transform(X)
+
+    selected_cols = [col_names[i] for i in range(len(col_names)) if fit.support_[i]]
+
+    plot_3d_scatter(rfe,Y, selected_cols, "rfe", img_path)
+
+    print("RFE best Features:\t\t\t", selected_cols)
+
+
+    ## Principal Component Analysis
+
+    #scale
+    X_N = StandardScaler().fit_transform(X)
+
+    pca_f = PCA(n_components=3)
+    pca = pca_f.fit_transform(X_N)
+
+    # summarize components
+    #print("Explained Variance: %s" % pca_f.explained_variance_ratio_)
+
+    plot_3d_scatter(pca,Y, ['PC1', 'PC2', 'PC3'], "pca", img_path)
+
+    #plt.plot(pca_f.explained_variance_ratio_, 'bd-')
+    #plt.show()
+
+    
+    ## Feature Importance
+    model = ExtraTreesClassifier(n_estimators=100, random_state=0)
+    model.fit(X, Y)
+
+    fi = fit.transform(X)
+
+    selected_cols = [col_names[i] for i in model.feature_importances_.argsort()[-3:]]
+
+    plot_3d_scatter(fi,Y, selected_cols, "feature_importance", img_path)
+
+    print("Univariate Selection best Features:\t", selected_cols)
 
     return [us, rfe, pca, fi]
 
@@ -237,10 +307,10 @@ def main():
     #print(data.shape)
 
     #TODO: UNCOMMENT
-    #visualize_data(data,IMG_PATH)
+    visualize_data(data,IMG_PATH)
 
 
-    [us, rfe, pca, fi] = feature_selection(data)
+    [us, rfe, pca, fi] = feature_selection(data, IMG_PATH)
 
 
 
