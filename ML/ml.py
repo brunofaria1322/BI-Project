@@ -129,7 +129,7 @@ def treat_data(df):
     df.loc[:,'gender'] = df['gender'].replace({'Male':1, 'Female':0})
     df.loc[:,'loyalty'] = df['loyalty'].replace({'Loyal Customer':1, 'disloyal Customer':0})
     df.loc[:,'flight_class'] = df['flight_class'].replace({'Business':2, 'Eco Plus':1, 'Eco':0 })
-    df.loc[:,'type_travel'] = df['type_travel'].replace({'Business Travel':1,'Personal travel':0})
+    df.loc[:,'type_travel'] = df['type_travel'].replace({'Business travel':1,'Personal Travel':0})
     
     #print(df.dtypes)
 
@@ -284,13 +284,14 @@ def feature_selection(df, img_path):
     model = ExtraTreesClassifier(n_estimators=100, random_state=0)
     model.fit(X, Y)
 
-    fi = fit.transform(X)
+    idx = model.feature_importances_.argsort()[-3:]
+    selected_cols = [col_names[i] for i in idx]
 
-    selected_cols = [col_names[i] for i in model.feature_importances_.argsort()[-3:]]
+    fi = X[selected_cols].values
 
     plot_3d_scatter(fi,Y, selected_cols, "feature_importance", img_path)
 
-    print("Univariate Selection best Features:\t", selected_cols)
+    print("Feature Importance best Features:\t", selected_cols)
 
     return [us, rfe, pca, fi]
 
@@ -307,7 +308,7 @@ def main():
     #print(data.shape)
 
     #TODO: UNCOMMENT
-    visualize_data(data,IMG_PATH)
+    #visualize_data(data,IMG_PATH)
 
 
     [us, rfe, pca, fi] = feature_selection(data, IMG_PATH)
