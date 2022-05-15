@@ -19,7 +19,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_selection import SelectKBest, chi2, RFE
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -469,7 +469,7 @@ def plot_confusion_matrix(cm, best_path):
     ax.yaxis.set_ticklabels(['False','True'])
 
     ## Display the visualization of the Confusion Matrix.
-    plt.show()
+    #plt.show()
     plt.savefig(best_path+"/confusion_matrix.png",)
 
 def train_best_model(best_path):
@@ -507,6 +507,7 @@ def train_best_model(best_path):
     print("Precision: ", tp / (tp + fp))
     print("Sensitivity: ", tp / (tp + fn))
     print("Specificity: ", tn/(tn+fp))
+    print("AUC Score: ", roc_auc_score(y_test, predictions))
 
     # plot the confusion matrix
     plot_confusion_matrix(cm, best_path)
