@@ -6,12 +6,12 @@ __author__ = "Bruno Faria & Dylan Perdigão"
 __date__ = "May 2022"
 
 
-import time
 import matplotlib.pyplot as plt
 import numpy as np
 from os import listdir
 from os.path import exists
 import pandas as pd
+import pickle
 import psycopg2
 import seaborn as sns
 from sklearn.decomposition import PCA
@@ -19,12 +19,14 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_selection import SelectKBest, chi2, RFE
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score
 from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+import time
 
 
 def connect_to_db():
@@ -342,7 +344,7 @@ def classify(X,y, seed, data_path, red_name):
     """
     
     # split into train and test
-    X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
     print("\n===================== \t", red_name, "\t =====================")
     
@@ -361,7 +363,7 @@ def classify(X,y, seed, data_path, red_name):
         kfold = KFold(n_splits=10, random_state=seed, shuffle=True)
     
         begin = time.time()
-        cv_results = cross_val_score(model, X_train, Y_train, cv=kfold, scoring='accuracy')
+        cv_results = cross_val_score(model, X_train, y_train, cv=kfold, scoring='accuracy')
         after = time.time()
 
         results.append(cv_results)
@@ -434,9 +436,50 @@ def visualize_classification(data_path):
     plt.savefig(data_path+"\svm_time.png")
     plt.close()
 
-def train_best_model():
+def plot_confusion_matrix(cm, best_path):
     """
-    Trains the best model
+    Plots and saves the confusion matrix
+    
+    Parameters:
+        cm: the confusion matrix
+        best_path: the path to the best model
+    """
+   
+    group_names = ['True Neg','False Pos','False Neg','True Pos']
+
+    group_counts = ["{0:0.0f}".format(value) for value in
+                    cm.flatten()]
+
+    group_percentages = ["{0:.2%}".format(value) for value in
+                        cm.flatten()/np.sum(cm)]
+
+    labels = [f"{v1}\n{v2}\n{v3}" for v1, v2, v3 in
+            zip(group_names,group_counts,group_percentages)]
+
+    labels = np.asarray(labels).reshape(2,2)
+
+    ax = sns.heatmap(cm, annot=labels, fmt='', cmap='Blues')
+
+    ax.set_title('Seaborn Confusion Matrix with labels\n\n')
+    ax.set_xlabel('\nPredicted Values')
+    ax.set_ylabel('Actual Values ')
+
+    ## Ticket labels - List must be in alphabetical order
+    ax.xaxis.set_ticklabels(['False','True'])
+    ax.yaxis.set_ticklabels(['False','True'])
+
+    ## Display the visualization of the Confusion Matrix.
+    plt.show()
+    plt.savefig(best_path+"/confusion_matrix.png",)
+
+def train_best_model(best_path):
+    """
+    Trains and saves the best model
+
+    In our case the best model was CART on the whole Dataset
+
+    Parameters:
+        best_path: the path to the best model files
     """
 
     # get the data
@@ -447,6 +490,31 @@ def train_best_model():
     # get the features and labels
     y=data['overall_satisfaction']
     X=data.drop(['overall_satisfaction'], axis=1)
+
+    # split into train and test
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+    # train the model
+    model = DecisionTreeClassifier()
+    model.fit(X_train, y_train)
+
+    # evaluate the model - accuracy, precision, sensitivity, specificity from confusion matrix
+    predictions = model.predict(X_test)
+    cm = confusion_matrix(y_test, predictions)
+    tn, fp, fn, tp = cm.ravel()
+
+    print("Accuracy: ", (tp + tn) / (tp + fp + fn + tn))
+    print("Precision: ", tp / (tp + fp))
+    print("Sensitivity: ", tp / (tp + fn))
+    print("Specificity: ", tn/(tn+fp))
+
+    # plot the confusion matrix
+    plot_confusion_matrix(cm, best_path)
+
+
+    # pickle the model
+    pickle.dump(model, open(best_path+"/best_model.pkl", "wb"))
+
 
 
     
@@ -481,9 +549,10 @@ if __name__ == "__main__":
 
     IMG_PATH = "ML/img"
     DATA_PATH = "ML/data"
+    BEST_PATH = "ML/best"
     SEED = 123456789
 
     #main()
     #visualize_classification(DATA_PATH)
-    train_best_model()
+    train_best_model(BEST_PATH)
     
