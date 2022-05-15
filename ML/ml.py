@@ -6,10 +6,10 @@ __author__ = "Bruno Faria & Dylan Perdigão"
 __date__ = "May 2022"
 
 
-from cProfile import label
 import time
 import matplotlib.pyplot as plt
 import numpy as np
+from os import listdir
 from os.path import exists
 import pandas as pd
 import psycopg2
@@ -382,7 +382,17 @@ def classify(X,Y, seed, data_path, red_name):
     #plt.show()
     plt.savefig(data_path+"/"+red_name+".png")
 
+def visualize_classification(data_path):
+    """
+    Visualizes the classification results
+    
+    Parameters:
+        data_path: the path to the data folder
+    """
+    # get all the csv files in the data folder
+    files = [f for f in listdir(data_path) if f.endswith(".csv")]
 
+    
 def main():
     pd.set_option('precision', 3)
     plt.rcParams.update({'font.size': 8})
@@ -412,9 +422,6 @@ def main():
             f.write("model,mean,std,train_time\n")
 
         classify(X,Y, SEED, DATA_PATH, red_name)
-        
-
-
 
 
 if __name__ == "__main__":
