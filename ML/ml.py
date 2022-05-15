@@ -399,6 +399,7 @@ def visualize_classification(data_path):
 
     means_all = np.zeros((6,len(files)))
     times_all = np.zeros((6,len(files)))
+    times_svm = np.zeros(len(files))
     
     for i,file in enumerate(files):
         # read the file
@@ -411,6 +412,7 @@ def visualize_classification(data_path):
         # store the means and times
         means_all[:,i] = means
         times_all[:,i] = times
+        times_svm[i] = times[-1]
 
     model_names = df.iloc[:,0].values
 
@@ -425,7 +427,12 @@ def visualize_classification(data_path):
     plt.savefig(data_path+"\heatmaps_time.png")
     plt.close()
 
-
+    plt.figure()
+    plt.bar(file_names, times_svm)
+    plt.ylabel("Time (s)")
+    #plt.show()
+    plt.savefig(data_path+"\svm_time.png")
+    plt.close()
 
 
     
@@ -465,3 +472,4 @@ if __name__ == "__main__":
 
     #main()
     visualize_classification(DATA_PATH)
+    
