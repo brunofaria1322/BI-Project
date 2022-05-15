@@ -193,7 +193,7 @@ def visualize_data(df, img_path):
     #plt.show()
     plt.savefig(img_path+"/data_visualization/density.png")
 
-def plot_3d_scatter(x,y, title, img_path):
+def plot_3d_scatter(x,y, title, img_path, size=10):
     """
     Plots and saves a 3d scatter plot
 
@@ -202,6 +202,7 @@ def plot_3d_scatter(x,y, title, img_path):
         y: the labels
         title: the title
         img_path: the path to the images folder
+        size: the size of the points
     """
 
     axis_labels = x.columns
@@ -209,7 +210,7 @@ def plot_3d_scatter(x,y, title, img_path):
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    sc= ax.scatter(x[:,0],x[:,1],x[:,2], c=y, s = 10)
+    sc= ax.scatter(x[:,0],x[:,1],x[:,2], c=y, s = size)
     ax.set_xlabel(axis_labels[0])
     ax.set_ylabel(axis_labels[1])
     ax.set_zlabel(axis_labels[2])
@@ -258,7 +259,7 @@ def feature_selection(X, Y, N, img_path = None):
     us = X[selected_cols]
 
     if img_path is not None:
-        plot_3d_scatter(us,Y, "univariate_selection", img_path)
+        plot_3d_scatter(us,Y, "univariate_selection", img_path, 5)
 
     print("Univariate Selection best Features:\t", selected_cols)
     print(us.head())
@@ -303,7 +304,7 @@ def feature_selection(X, Y, N, img_path = None):
     print(pca.head())
 
     if img_path is not None:
-        plot_3d_scatter(pca,Y, "pca", img_path)
+        plot_3d_scatter(pca,Y, "pca", img_path, 5)
 
     #plt.plot(pca_f.explained_variance_ratio_, 'bd-')
     #plt.show()
@@ -389,16 +390,46 @@ def visualize_classification(data_path):
     Parameters:
         data_path: the path to the data folder
     """
+
     # get all the csv files in the data folder
     files = [f for f in listdir(data_path) if f.endswith(".csv")]
 
+    # get the names of the algorithms
+    file_names = [f.split(".")[0] for f in files]
+
+    means_all = np.zeros((6,len(files)))
+    times_all = np.zeros((6,len(files)))
+    
+    for i,file in enumerate(files):
+        # read the file
+        df = pd.read_csv(data_path+"/"+file)
+
+        # get the means and times)
+        means = df.iloc[:,1].values
+        times = df.iloc[:,3].values
+
+        # store the means and times
+        means_all[:,i] = means
+        times_all[:,i] = times
+
+    model_names = df.iloc[:,0].values
+
+    # plot heatmaps using seaborn
+    sns.heatmap(means_all, annot=True, xticklabels=file_names, yticklabels=model_names, cmap="YlGnBu")
+    #plt.show() 
+    plt.savefig(data_path+"\heatmaps_means.png")
+    plt.close()
+
+    sns.heatmap(times_all, annot=True, xticklabels=file_names, yticklabels=model_names, cmap="YlGnBu")
+    #plt.show()
+    plt.savefig(data_path+"\heatmaps_time.png")
+    plt.close()
+
+
+
+
     
 def main():
-    pd.set_option('precision', 3)
-    plt.rcParams.update({'font.size': 8})
-    IMG_PATH = "ML/img"
-    DATA_PATH = "ML/data"
-    SEED = 123456789
 
     data = read_data()
     #print(data.shape)
@@ -425,4 +456,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    pd.set_option('precision', 3)
+    plt.rcParams.update({'font.size': 8})
+
+    IMG_PATH = "ML/img"
+    DATA_PATH = "ML/data"
+    SEED = 123456789
+
+    #main()
+    visualize_classification(DATA_PATH)
