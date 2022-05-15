@@ -379,8 +379,8 @@ def classify(X,Y, seed, data_path, red_name):
     plt.boxplot(results)
     ax.set_xticklabels(names)
     
-    plt.savefig(data_path+"/"+red_name+".png")
     #plt.show()
+    plt.savefig(data_path+"/"+red_name+".png")
 
 
 def main():
