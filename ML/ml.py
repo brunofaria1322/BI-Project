@@ -223,13 +223,13 @@ def plot_3d_scatter(x,y, title, img_path, size=10):
     #plt.show()
     plt.savefig(img_path+"/feature_selection/"+title+".png")
 
-def feature_selection(X, Y, N, img_path = None):
+def feature_selection(X, y, N, img_path = None):
     """
     Performs feature selection
 
     Parameters:
         X: the features array
-        Y: the labels
+        y: the labels
         N: the number of features to select
         img_path: the path to the images folder
 
@@ -248,7 +248,7 @@ def feature_selection(X, Y, N, img_path = None):
     print("\n==================== \tUnivariate Statistical Tests\t ====================")
 
     test= SelectKBest(score_func=chi2, k=N)
-    fit = test.fit(X, Y)
+    fit = test.fit(X, y)
     #print(fit)
 
     # sumarize scores
@@ -259,7 +259,7 @@ def feature_selection(X, Y, N, img_path = None):
     us = X[selected_cols]
 
     if img_path is not None:
-        plot_3d_scatter(us,Y, "univariate_selection", img_path, 5)
+        plot_3d_scatter(us,y, "univariate_selection", img_path, 5)
 
     print("Univariate Selection best Features:\t", selected_cols)
     print(us.head())
@@ -273,7 +273,7 @@ def feature_selection(X, Y, N, img_path = None):
     #lbfgs solver - uses the Limited Memory Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm
 
     rfe = RFE(model, n_features_to_select=N)
-    fit = rfe.fit(X, Y)
+    fit = rfe.fit(X, y)
 
     #rfe = fit.transform(X)
 
@@ -281,7 +281,7 @@ def feature_selection(X, Y, N, img_path = None):
     rfe = X[selected_cols]
 
     if img_path is not None:
-        plot_3d_scatter(rfe,Y, "rfe", img_path)
+        plot_3d_scatter(rfe,y, "rfe", img_path)
 
     print("RFE best Features:\t\t\t", selected_cols)
     print(rfe.head())
@@ -304,7 +304,7 @@ def feature_selection(X, Y, N, img_path = None):
     print(pca.head())
 
     if img_path is not None:
-        plot_3d_scatter(pca,Y, "pca", img_path, 5)
+        plot_3d_scatter(pca,y, "pca", img_path, 5)
 
     #plt.plot(pca_f.explained_variance_ratio_, 'bd-')
     #plt.show()
@@ -314,7 +314,7 @@ def feature_selection(X, Y, N, img_path = None):
     print("\n==================== \tFeature Importance\t ====================")
 
     model = ExtraTreesClassifier(n_estimators=100, random_state=0)
-    model.fit(X, Y)
+    model.fit(X, y)
 
     idx = model.feature_importances_.argsort()[-N:]
     selected_cols = [col_names[i] for i in idx]
@@ -322,27 +322,27 @@ def feature_selection(X, Y, N, img_path = None):
     fi = X[selected_cols]
 
     if img_path is not None:
-        plot_3d_scatter(fi,Y, "feature_importance", img_path)
+        plot_3d_scatter(fi,y, "feature_importance", img_path)
 
     print("Feature Importance best Features:\t", selected_cols)
     print(fi.head())
 
     return [us, rfe, pca, fi]
 
-def classify(X,Y, seed, data_path, red_name):
+def classify(X,y, seed, data_path, red_name):
     """
     Performs classificationwith diferent models
         
     Parameters:
         X: the features
-        Y: the labels
+        y: the labels
         seed: the seed for the random state
         data_path: the path to the data folder
         red_name: the name of the reduceding algorithm
     """
     
     # split into train and test
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
     print("\n===================== \t", red_name, "\t =====================")
     
@@ -434,6 +434,20 @@ def visualize_classification(data_path):
     plt.savefig(data_path+"\svm_time.png")
     plt.close()
 
+def train_best_model():
+    """
+    Trains the best model
+    """
+
+    # get the data
+    data = read_data()
+
+    data = treat_data(data)
+
+    # get the features and labels
+    y=data['overall_satisfaction']
+    X=data.drop(['overall_satisfaction'], axis=1)
+
 
     
 def main():
@@ -444,14 +458,13 @@ def main():
     data = treat_data(data)
     #print(data.shape)
 
-    #TODO: UNCOMMENT
-    #visualize_data(data,IMG_PATH)
+    visualize_data(data,IMG_PATH)
 
-    Y=data['overall_satisfaction']
+    y=data['overall_satisfaction']
     X=data.drop(['overall_satisfaction'], axis=1)
 
-    [us3, rfe3, pca3, fi3] = feature_selection(X,Y, 3, IMG_PATH)
-    [us10, rfe10, pca10, fi10] = feature_selection(X,Y, 10)
+    [us3, rfe3, pca3, fi3] = feature_selection(X,y, 3, IMG_PATH)
+    [us10, rfe10, pca10, fi10] = feature_selection(X,y, 10)
 
     print("\n======================================== CLASSIFICATION ========================================")
     for X,red_name in zip([X, us3, rfe3, pca3, fi3, us10, rfe10, pca10, fi10], ['WHOLE','US_3', 'RFE_3', 'PCA_3', 'FI_3', 'US_10', 'RFE_10', 'PCA_10', 'FI_10']):
@@ -459,7 +472,7 @@ def main():
         with open(DATA_PATH+"/"+red_name+".csv", "w") as f:
             f.write("model,mean,std,train_time\n")
 
-        classify(X,Y, SEED, DATA_PATH, red_name)
+        classify(X,y, SEED, DATA_PATH, red_name)
 
 
 if __name__ == "__main__":
@@ -471,5 +484,6 @@ if __name__ == "__main__":
     SEED = 123456789
 
     #main()
-    visualize_classification(DATA_PATH)
+    #visualize_classification(DATA_PATH)
+    train_best_model()
     
