@@ -163,7 +163,7 @@ def visualize_data(df, img_path):
 
     ## Overall satisfaction Counts
     plt.figure(figsize=(10,5))
-    ax = sns.countplot(x="overall_satisfaction", data=df)
+    ax = sns.countplot(x="overall_satisfaction", data=df, palette=['#fa7256','#f89649'])
     for p in ax.patches:
         ax.annotate(f'\n{p.get_height()}', (p.get_x()+0.2, p.get_height()), ha='center', va='top', color='white', size=18)
     
@@ -176,7 +176,9 @@ def visualize_data(df, img_path):
     # heatmap of correlations
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    cax = ax.matshow(correlations, vmin=-1, vmax=1)
+    
+    cmap = create_colormap('0b2f5b','fa7256','f7d380')
+    cax = ax.matshow(correlations, vmin=-1, vmax=1,  cmap=cmap)
     fig.colorbar(cax)
     ticks = np.arange(0,len(df.columns),1)
     #ax.set_xticks(ticks)
@@ -445,13 +447,24 @@ def visualize_classification(data_path):
     plt.savefig(data_path+"\whole_time.png")
     plt.close()
 
-def create_colormap(hex1,hex2):
+def create_colormap(hex1,hex2, hex3 = None):
     r1,g1,b1 = (int(hex1[i:i+2], 16)/255 for i in (0,2,4))
     r2,g2,b2 = (int(hex2[i:i+2], 16)/255 for i in (0,2,4))
 
     myColors=[]
-    for i in range(1000):
-        myColors.append((r1+(r2-r1)*(i+1)/1000, g1+(g2-g1)*(i+1)/1000, b1+(b2-b1)*(i+1)/1000, 1.0))
+
+    if hex3 is not None:
+        r3,g3,b3 = (int(hex3[i:i+2], 16)/255 for i in (0,2,4))
+        
+        for i in range(500):
+            myColors.append((r1+(r2-r1)*(i+1)/500, g1+(g2-g1)*(i+1)/500, b1+(b2-b1)*(i+1)/500, 1.0))
+            
+        for i in range(500):
+            myColors.append((r2+(r3-r2)*(i+1)/500, g2+(g3-g2)*(i+1)/500, b2+(b3-b2)*(i+1)/500, 1.0))
+
+    else:
+        for i in range(1000):
+            myColors.append((r1+(r2-r1)*(i+1)/1000, g1+(g2-g1)*(i+1)/1000, b1+(b2-b1)*(i+1)/1000, 1.0))
 
     return LinearSegmentedColormap.from_list('Custom', myColors, len(myColors))
 
@@ -537,8 +550,6 @@ def train_best_model(best_path):
     # pickle the model
     pickle.dump(model, open(best_path+"/best_model.pkl", "wb"))
 
-
-
     
 def main():
 
@@ -549,6 +560,8 @@ def main():
     #print(data.shape)
 
     visualize_data(data,IMG_PATH)
+
+    return
 
     y=data['overall_satisfaction']
     X=data.drop(['overall_satisfaction'], axis=1)
@@ -574,7 +587,7 @@ if __name__ == "__main__":
     BEST_PATH = "ML/best"
     SEED = 123456789
 
-    #main()
-    visualize_classification(DATA_PATH)
+    main()
+    #visualize_classification(DATA_PATH)
     #train_best_model(BEST_PATH)
     
