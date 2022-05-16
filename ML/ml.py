@@ -162,19 +162,20 @@ def visualize_data(df, img_path):
     #print("===== Data y =====")
 
     ## Overall satisfaction Counts
-    plt.figure(figsize=(10,5))
+    plt.figure(figsize=(5,5))
     ax = sns.countplot(x="overall_satisfaction", data=df, palette=['#fa7256','#f89649'])
     for p in ax.patches:
-        ax.annotate(f'\n{p.get_height()}', (p.get_x()+0.2, p.get_height()), ha='center', va='top', color='white', size=18)
+        ax.annotate(f'\n{p.get_height()}', (p.get_x()+0.5, p.get_height()), ha='center', va='top', color='white', size=18)
     
     plt.savefig(img_path+"/data_visualization/overall_satisfaction_counts.png")
     #plt.show()
+
 
     ## Correlation matrix
     correlations = df.corr(method='pearson')
     
     # heatmap of correlations
-    fig = plt.figure()
+    fig = plt.figure(figsize=(8,5))
     ax = fig.add_subplot(111)
     
     cmap = create_colormap('0b2f5b','fa7256','f7d380')
@@ -561,8 +562,6 @@ def main():
 
     visualize_data(data,IMG_PATH)
 
-    return
-
     y=data['overall_satisfaction']
     X=data.drop(['overall_satisfaction'], axis=1)
 
@@ -587,7 +586,7 @@ if __name__ == "__main__":
     BEST_PATH = "ML/best"
     SEED = 123456789
 
-    main()
+    #main()
     #visualize_classification(DATA_PATH)
     #train_best_model(BEST_PATH)
     
