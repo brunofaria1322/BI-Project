@@ -6,6 +6,7 @@ __author__ = "Bruno Faria & Dylan Perdigão"
 __date__ = "May 2022"
 
 
+from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 from os import listdir
@@ -401,7 +402,6 @@ def visualize_classification(data_path):
 
     means_all = np.zeros((6,len(files)))
     times_all = np.zeros((6,len(files)))
-    times_svm = np.zeros(len(files))
     
     for i,file in enumerate(files):
         # read the file
@@ -414,27 +414,46 @@ def visualize_classification(data_path):
         # store the means and times
         means_all[:,i] = means
         times_all[:,i] = times
-        times_svm[i] = times[-1]
 
     model_names = df.iloc[:,0].values
 
+
+    cmap = create_colormap('fa7256','f7d380')
+
     # plot heatmaps using seaborn
-    sns.heatmap(means_all, annot=True, xticklabels=file_names, yticklabels=model_names, cmap="YlGnBu")
+    sns.heatmap(means_all, annot=True, xticklabels=file_names, yticklabels=model_names, cmap=cmap)
     #plt.show() 
     plt.savefig(data_path+"\heatmaps_means.png")
     plt.close()
 
-    sns.heatmap(times_all, annot=True, xticklabels=file_names, yticklabels=model_names, cmap="YlGnBu")
+    sns.heatmap(times_all, annot=True, xticklabels=file_names, yticklabels=model_names, cmap=cmap)
     #plt.show()
     plt.savefig(data_path+"\heatmaps_time.png")
     plt.close()
 
     plt.figure()
-    plt.bar(file_names, times_svm)
+    plt.bar(file_names, times_all[-1,:], color='#f89649')
     plt.ylabel("Time (s)")
     #plt.show()
     plt.savefig(data_path+"\svm_time.png")
     plt.close()
+
+    plt.figure()
+    plt.bar(model_names, times_all[:,-1], color='#f89649')
+    plt.ylabel("Time (s)")
+    #plt.show()
+    plt.savefig(data_path+"\whole_time.png")
+    plt.close()
+
+def create_colormap(hex1,hex2):
+    r1,g1,b1 = (int(hex1[i:i+2], 16)/255 for i in (0,2,4))
+    r2,g2,b2 = (int(hex2[i:i+2], 16)/255 for i in (0,2,4))
+
+    myColors=[]
+    for i in range(1000):
+        myColors.append((r1+(r2-r1)*(i+1)/1000, g1+(g2-g1)*(i+1)/1000, b1+(b2-b1)*(i+1)/1000, 1.0))
+
+    return LinearSegmentedColormap.from_list('Custom', myColors, len(myColors))
 
 def plot_confusion_matrix(cm, best_path):
     """
@@ -458,7 +477,9 @@ def plot_confusion_matrix(cm, best_path):
 
     labels = np.asarray(labels).reshape(2,2)
 
-    ax = sns.heatmap(cm, annot=labels, fmt='', cmap='Blues')
+    cmap = create_colormap('ff4b41','f7d380')
+
+    ax = sns.heatmap(cm, annot=labels, fmt='', cmap=cmap)
 
     ax.set_title('Seaborn Confusion Matrix with labels\n\n')
     ax.set_xlabel('\nPredicted Values')
@@ -554,6 +575,6 @@ if __name__ == "__main__":
     SEED = 123456789
 
     #main()
-    #visualize_classification(DATA_PATH)
-    train_best_model(BEST_PATH)
+    visualize_classification(DATA_PATH)
+    #train_best_model(BEST_PATH)
     
