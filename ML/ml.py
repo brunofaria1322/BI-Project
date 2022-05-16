@@ -216,10 +216,24 @@ def plot_3d_scatter(x,y, title, img_path, size=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    sc= ax.scatter(x[:,0],x[:,1],x[:,2], c=y, s = size)
+    sc= ax.scatter(x[:,0],x[:,1],x[:,2], c=y, s = size, cmap = LinearSegmentedColormap.from_list('mycmap', ['#FA7256','#F7D380']))
     ax.set_xlabel(axis_labels[0])
     ax.set_ylabel(axis_labels[1])
     ax.set_zlabel(axis_labels[2])
+
+    # Get rid of colored axes planes
+    # First remove fill
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
+
+    # Now set color to white (or whatever is "invisible")
+    ax.xaxis.pane.set_edgecolor('w')
+    ax.yaxis.pane.set_edgecolor('w')
+    ax.zaxis.pane.set_edgecolor('w')
+
+    # Bonus: To get rid of the grid as well:
+    #ax.grid(False)
 
     plt.legend(handles=sc.legend_elements()[0], 
            labels=['satisfied', 'neutral or dissatisfied'],
@@ -566,6 +580,7 @@ def main():
     X=data.drop(['overall_satisfaction'], axis=1)
 
     [us3, rfe3, pca3, fi3] = feature_selection(X,y, 3, IMG_PATH)
+    return
     [us10, rfe10, pca10, fi10] = feature_selection(X,y, 10)
 
     print("\n======================================== CLASSIFICATION ========================================")
@@ -586,7 +601,7 @@ if __name__ == "__main__":
     BEST_PATH = "ML/best"
     SEED = 123456789
 
-    #main()
+    main()
     #visualize_classification(DATA_PATH)
     #train_best_model(BEST_PATH)
     
