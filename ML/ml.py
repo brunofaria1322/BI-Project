@@ -580,7 +580,6 @@ def main():
     X=data.drop(['overall_satisfaction'], axis=1)
 
     [us3, rfe3, pca3, fi3] = feature_selection(X,y, 3, IMG_PATH)
-    return
     [us10, rfe10, pca10, fi10] = feature_selection(X,y, 10)
 
     print("\n======================================== CLASSIFICATION ========================================")
@@ -601,7 +600,7 @@ if __name__ == "__main__":
     BEST_PATH = "ML/best"
     SEED = 123456789
 
-    main()
+    #main()
     #visualize_classification(DATA_PATH)
-    #train_best_model(BEST_PATH)
+    train_best_model(BEST_PATH)
     
